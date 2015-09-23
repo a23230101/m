@@ -1,18 +1,7 @@
 <?php
 
 // Return username.ini value
-function user($key, $user = null)
-{
-    $value = 'config/' . $user . '.ini';
-    static $_config = array();
-    if (file_exists($value)) {
-        $_config = parse_ini_file($value, true);
-        if (!empty($_config[$key])) {
-            return $_config[$key];
-        }
-    }
-}
-function update_user($userName, $password, $role)
+function login_user($userName, $password, $role)
 {
     $file = 'config/' . $userName . '.ini';
     if (file_exists($file)) {
@@ -23,21 +12,8 @@ function update_user($userName, $password, $role)
     }
     return false;
 }
-function create_user($userName, $password, $role = "user")
-{
-    $file = 'config/' . $userName . '.ini';
-    if (file_exists($file)) {
-        return false;
-    } else {
-        file_put_contents($file, "password = " . password_hash($password, PASSWORD_DEFAULT) . "\n" .
-            "encryption = password_hash\n" .
-            "role = " . $role . "\n");
-        return true;
-    }
-}
 
 /// GET SIZE
-
 function remotefileSize($url) {
 	$ch = curl_init($url);
 	curl_setopt($ch, CURLOPT_NOBODY, 1);
@@ -52,7 +28,6 @@ function remotefileSize($url) {
 }
 
 /// FORMAT BYTES
-
 function formatBytes($size, $precision = 2)
 {
     $base = log($size, 1024);

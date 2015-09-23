@@ -61,7 +61,7 @@ function formatBytes($size, $precision = 2)
     return round(pow(1024, $base - floor($base)), $precision) . $suffixes[floor($base)];
 }
             
-$cont = remotefileSize('.$url');
-echo formatBytes($cont);
+///$cont = remotefileSize('.$url');///
+///echo formatBytes($cont);///
 
 ?>

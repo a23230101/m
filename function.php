@@ -106,10 +106,10 @@ function addlinkmain($linkurl, $tag='0', $date='0', $count='0', $last='0') {
   $last = ($count=='0' || $count =='-') ? "-" : date("Y.m.d");
   $contents = "$linkurl;$date;$count;$last";
   if ($tag=='0') {
-    $shortcut = Random_Password(6);
+    $shortcut = Random_Password(50);
     while(file_exists("content/$shortcut"))
     {
-      $shortcut = Random_Password(6);
+      $shortcut = Random_Password(50);
     }
     $short_url = curPageURL().$shortcut;
     $sysinfo = (file_put_contents("content/$shortcut",$contents))
@@ -152,28 +152,61 @@ function redirect($shortcut) {
   } else {
     include("config/user.php");
     $error = (empty($conf['redirect'])) ? curPageURL() : $conf['redirect'];
+    header('Location: '.$error.'');
+    exit;
   }
+  
+
   
   $xml = simplexml_load_file($destination, 'SimpleXMLElement', LIBXML_NOCDATA);
   foreach ($xml->channel->item as $item) {
     // get children for namespace prefixed 'media'
     $media = $item->children('media',true);
+    $preview = $media->group->content[0]->attributes();
     $video1 = $media->group->content[1]->attributes();
-    $video2 = $media->group->content[2]->attributes();
-        
-if(!empty($video2['url']))
-{
-    $cont = remotefileSize(''.$video2['url'].'');
-    echo formatBytes($cont);
-}
-else
-{
+   // $video2 = $media->group->content[2]->attributes();
     $cont = remotefileSize(''.$video1['url'].'');
-    echo formatBytes($cont);
-}
+   // $cont2 = remotefileSize(''.$video2['url'].'');
+    }
+    
+    
+ if(!empty($video1))
+    {
+    echo '
+    <br/>
+    <center>
+    <img src="'.$preview['url'].'"/>
+    </center>
+    <table class="u-full-width">
+    <thead>
+    <tr>
+    <th>Title</th>
+    <th>File</th>
+    <th>Size</th>
+    <th>Addon</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+    <td>'.$item->title.'</td>
+    <td>MP4/Video</td>
+    <td>'.formatBytes($cont).'</td>     <td>'.$item->pubDate.'</td>
+    </tr>
+    </tbody>
+    </table>
+    <center>
+    <a class="button button-primary" href="'.$video1['url'].'">Download</a>
+    </center>
+    <br/>
+';
+include 'data/download';
+    }
+    else
+    {
+    echo "Video Sedang Di Proses";
+    }   
 
 
-}
 }
 
 /////////////////////
@@ -441,7 +474,5 @@ function getFeed($feed_url) {
     echo "</ul>";
   }
 }
-
-////////////////////////////
 
 ?>

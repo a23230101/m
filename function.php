@@ -175,7 +175,7 @@ function redirect($shortcut) {
     echo '
     <br/>
     <center>
-    <img src="'.$preview['url'].'"/>
+    <img style="max-width: 100px;" src="'.$preview['url'].'"/>
     </center>
     <table class="u-full-width">
     <thead>
